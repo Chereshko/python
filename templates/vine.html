@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center text-success">{{ vine.name }} "{{ vine.producer.name }}"</h1>
+<div class="row">
+    <div class="col-6">
+        <h4>Изменение параметров</h4>
+        <form method="post" action="{{ url_for('change_vine', id=vine.id) }}" onsubmit="return confirm('Вы уверены?');">
+            <div class="form-group">
+                <p>название:</p>
+                <input type="text" name="name" value="{{ vine.name }}">
+            </div>
+            <div class="form-group">
+                <p>сорт:</p>
+                <select name="sort">
+                    {% for sort in sorts %}
+                    {% set selected = 'selected' if sort.id == vine.sort.id else '' %}
+                    <option value="{{ sort.id }}" {{selected}}>{{ sort.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <p>производитель:</p>
+                <select name="producer">
+                    {% for producer in producers %}
+                    {% set selected = 'selected' if producer.id == vine.producer.id else '' %}
+                    <option value="{{ producer.id }}" {{selected}}>{{ producer.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-check">
+                {% set checked = 'checked' if vine.bestseller else '' %}
+                <input class="form-check-input" name="bestseller" type="checkbox" id="defaultCheck1" value = "" {{ checked }}>
+                <label class="form-check-label" for="defaultCheck1">Bestseller</label>
+            </div>
+
+            <div class="form-group">
+                <p>цена:</p>
+                <input type="number" step="0.01" value="{{ vine.price }}" name="price">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Изменить</button>
+            <a href="{{ url_for('delete', id = vine.id ) }}" class="btn btn-danger">Удалить</a>
+        </form>
+    </div>
+    <div class="col-6">
+        <h3>Комментарии:</h3>
+        {% if vine.comments %}
+            {% for comment in vine.comments %}
+            <p>
+                {{ comment.text }}
+                ({{ comment.name }})
+                {{ comment.email }}
+            </p>
+            {% endfor %}
+        {% else %}
+            <p>пока нет комментариев</p>
+        {% endif %}
+        <hr>
+        <a href="{{ url_for('comment', id = vine.id) }}" class="btn  btn-warning text-center">Добавить комментарий</a>
+    </div>
+</div>
+{% endblock %}

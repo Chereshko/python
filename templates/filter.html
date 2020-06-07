@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1 class="text-center text-success">Наши вина</h1>
+<div class="row">
+    <div class="col-2">
+        <h4>Фильтр</h4>
+        {% if producer %}
+        <p>Производитель: {{ producer.name }}</p>
+        {% endif %}
+        {% if sort %}
+        <p>Сорт: {{ sort.name }}</p>
+        {% endif %}
+    </div>
+    <div class="col-10">
+        {% for vine in vines %}
+        {% set best = 'bestseller' if vine.bestseller else '' %}
+        <div class="row mb-2 {{ best }}">
+            {% set pic = 'red.png' if 'красное' in vine.sort.name else 'white.png' %}
+            <div class="col-2">
+                <img class="img-thumbnail"
+                        src="{{ url_for('static', filename='img/' + pic) }}">
+            </div>
+            <div class="col-2">
+                <a href="{{ url_for('vine', id=vine.id) }}">
+                    {{ vine.name }}</a>
+            </div>
+            <div class="col-2">
+                <a href="{{ url_for('filter', sort_id=0, producer_id = vine.producer.id) }}">
+                "{{ vine.producer.name }}"
+                </a>
+            </div>
+            <div class="col-3">
+                <a href="{{ url_for('filter', sort_id=vine.sort.id, producer_id = 0) }}">
+                {{ vine.sort.name }}
+                    </a>
+            </div>
+            <div class="col-3">
+                <h4>{{ '%.2f'|format(vine.price) }} грн.</h4>
+            </div>
+        </div>
+        <hr>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
